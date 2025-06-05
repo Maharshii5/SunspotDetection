@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Solar Image Analysis{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    <style>
+        .sunspot-info {
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 0.25rem;
+        }
+        
+        .results-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .file-upload-wrapper {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .file-upload-label {
+            display: block;
+            padding: 1rem;
+            text-align: center;
+            border: 2px dashed var(--bs-border-color);
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-upload-label:hover {
+            border-color: var(--bs-primary);
+        }
+        
+        .sun-background {
+            background: radial-gradient(circle, rgba(255,165,0,0.8) 0%, rgba(255,69,0,0.3) 70%, rgba(0,0,0,0) 100%);
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            position: relative;
+            border-radius: 50%;
+            box-shadow: 0 0 60px rgba(255, 165, 0, 0.6);
+        }
+        
+        .sunspot {
+            position: absolute;
+            background-color: rgba(0,0,0,0.7);
+            border-radius: 50%;
+            width: 15px;
+            height: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">Solar Image Analysis</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">Upload</a>
+                    </li>
+                    {% if session.get('processing_results') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('results') }}">Results</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('history') }}">History</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="row">
+            <div class="col-lg-12">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Solar Image Analysis Tool</h5>
+                    <p>A tool for detecting the Sun's limb and identifying sunspots in solar telescope FITS images.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>Created for the PRL Summer Internship Programme application, March 2025</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

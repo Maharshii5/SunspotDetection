@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Solar Image Analysis - Results{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Analysis Results: {{ results.filename }}</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card sunspot-info bg-dark mb-3">
+                            <div class="card-body">
+                                <h3 class="card-title">Sun's Parameters</h3>
+                                <ul class="list-group list-group-flush bg-dark mb-3">
+                                    <li class="list-group-item bg-dark">Center X: <strong>{{ results.center_x|round(2) }}</strong> pixels</li>
+                                    <li class="list-group-item bg-dark">Center Y: <strong>{{ results.center_y|round(2) }}</strong> pixels</li>
+                                    <li class="list-group-item bg-dark">Radius: <strong>{{ results.radius|round(2) }}</strong> pixels</li>
+                                </ul>
+                                
+                                <h3 class="card-title">Sunspot Analysis</h3>
+                                <p class="card-text">Number of sunspot regions detected: <strong>{{ results.num_sunspots }}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card bg-dark">
+                            <div class="card-body">
+                                <h3 class="card-title">Download Results</h3>
+                                <p class="card-text">Download the processed data for further analysis.</p>
+                                
+                                {% if visualization_path %}
+                                <div class="d-grid gap-2">
+                                    <a href="{{ url_for('download_file', filename=visualization_path) }}" class="btn btn-primary">
+                                        <i class="bi bi-download"></i> Download Visualization
+                                    </a>
+                                    <a href="{{ url_for('download_file', filename=results.filename|replace('.fits', '_sunspots_mask.fits')|replace('.fit', '_sunspots_mask.fits')) }}" class="btn btn-outline-light">
+                                        <i class="bi bi-file-earmark-binary"></i> Download Sunspots Mask (FITS)
+                                    </a>
+                                </div>
+                                {% else %}
+                                <div class="alert alert-warning">
+                                    Visualization file not found. Please process the image again.
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card results-container">
+            <div class="card-header bg-secondary text-white">
+                <h3 class="mb-0">Visualization</h3>
+            </div>
+            <div class="card-body">
+                {% if visualization_path %}
+                <img src="{{ url_for('show_visualization', filename=visualization_path) }}" alt="Solar analysis visualization" class="img-fluid">
+                {% else %}
+                <div class="alert alert-warning">
+                    Visualization not available. Please process the image again.
+                </div>
+                {% endif %}
+                
+                <div class="row mt-4">
+                    <div class="col">
+                        <div class="d-grid">
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-primary">Process Another Image</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

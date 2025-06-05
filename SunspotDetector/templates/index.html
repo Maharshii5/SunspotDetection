@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Solar Image Analysis - Upload{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Upload Solar FITS Image</h2>
+            </div>
+            <div class="card-body">
+                <p class="lead">Upload a FITS file from a solar telescope to detect the Sun's limb and identify sunspots.</p>
+                
+                <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+                    <div class="file-upload-wrapper">
+                        <label for="file-upload" class="file-upload-label p-5">
+                            <div class="sun-background mb-4">
+                                <!-- Sample sunspots for visual effect -->
+                                <div class="sunspot" style="top: 40%; left: 30%;"></div>
+                                <div class="sunspot" style="top: 50%; left: 60%;"></div>
+                                <div class="sunspot" style="top: 70%; left: 45%;"></div>
+                            </div>
+                            <div class="text-center">
+                                <h5>Drop your FITS file here</h5>
+                                <p class="text-muted">or click to browse</p>
+                            </div>
+                        </label>
+                        <input id="file-upload" type="file" name="file" class="form-control d-none" accept=".fits,.fit">
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">Process Image</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h3 class="mb-0">About This Tool</h3>
+            </div>
+            <div class="card-body">
+                <p>This tool processes solar telescope FITS images to:</p>
+                <ol>
+                    <li>Detect the Sun's limb (visible edge) as a circle</li>
+                    <li>Provide the center coordinates (x, y) and radius of the solar disk</li>
+                    <li>Create a binary image identifying sunspots (regions with sunspots as 1, rest as 0)</li>
+                </ol>
+                <p>The tool is designed for FITS files from the SPAR telescope of USO-PRL, but works with compatible solar telescope FITS images.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileUpload = document.getElementById('file-upload');
+        const fileLabel = document.querySelector('.file-upload-label');
+        
+        // Show filename when selected
+        fileUpload.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const fileName = this.files[0].name;
+                fileLabel.querySelector('h5').textContent = fileName;
+                fileLabel.querySelector('p').textContent = 'File selected';
+                fileLabel.style.borderColor = 'var(--bs-success)';
+            }
+        });
+        
+        // Drag and drop functionality
+        fileLabel.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = 'var(--bs-primary)';
+            this.style.backgroundColor = 'rgba(var(--bs-primary-rgb), 0.1)';
+        });
+        
+        fileLabel.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = 'var(--bs-border-color)';
+            this.style.backgroundColor = '';
+        });
+        
+        fileLabel.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = 'var(--bs-success)';
+            this.style.backgroundColor = '';
+            
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                fileUpload.files = e.dataTransfer.files;
+                const fileName = e.dataTransfer.files[0].name;
+                this.querySelector('h5').textContent = fileName;
+                this.querySelector('p').textContent = 'File selected';
+            }
+        });
+    });
+</script>
+{% endblock %}

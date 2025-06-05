@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Solar Image Analysis - History{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Processing History</h2>
+            </div>
+            <div class="card-body">
+                {% if processed_images %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Original Filename</th>
+                                <th>Sun Center (x, y)</th>
+                                <th>Radius</th>
+                                <th>Sunspots</th>
+                                <th>Processed Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for image in processed_images %}
+                            <tr>
+                                <td>{{ image.original_filename }}</td>
+                                <td>({{ image.center_x|round(1) }}, {{ image.center_y|round(1) }})</td>
+                                <td>{{ image.radius|round(1) }}</td>
+                                <td>{{ image.num_sunspots }}</td>
+                                <td>{{ image.processed_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a href="{{ url_for('visualization', filename=image.visualization_path) }}" class="btn btn-outline-primary" target="_blank">
+                                            View
+                                        </a>
+                                        <a href="{{ url_for('download_file', filename=image.mask_path) }}" class="btn btn-outline-success">
+                                            Download Mask
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <p>No processed images yet. <a href="{{ url_for('index') }}">Upload an image</a> to get started.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+            <a href="{{ url_for('index') }}" class="btn btn-primary">
+                Process New Image
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
