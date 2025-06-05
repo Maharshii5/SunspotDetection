@@ -98,7 +98,7 @@ For each processed image, the application provides:
 
 ## Author
 
-This application was created for the PRL Summer Internship Programme application, March 2025.
+This application was created for the PRL Summer Internship Programme, March 2025.
 
 ## License
 
